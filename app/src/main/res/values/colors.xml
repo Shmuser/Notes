@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#FCD8A5</color>
+    <color name="colorDefaultCard">#7FFFFAE0</color>
+    <color name="colorGreenCard">#7F48FFA1</color>
+    <color name="colorBlueCard">#7F0F9BFF</color>
+    <color name="colorRedCard">#7FFE0D0D</color>
+    <color name="colorPinkCard">#7FFF6EE6</color>
+    <color name="colorFragmentBackground">#82BABABA</color>
+
+</resources>

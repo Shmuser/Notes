@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/edit_note_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity=""
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/colors_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal|top"
+            android:layout_margin="16dp"
+            android:orientation="horizontal"
+            android:weightSum="5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/default_card_color"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/card_selector_border"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@color/colorDefaultCard" />
+
+            <ImageView
+                android:id="@+id/green_card_color"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/card_selector_border"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@color/colorGreenCard" />
+
+            <ImageView
+                android:id="@+id/blue_card_color"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/card_selector_border"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@color/colorBlueCard" />
+
+            <ImageView
+                android:id="@+id/red_card_color"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/card_selector_border"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@color/colorRedCard" />
+
+            <ImageView
+                android:id="@+id/pink_card_color"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/card_selector_border"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@color/colorPinkCard" />
+
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edit_note_content"
+            style="@style/Widget.AppCompat.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@color/colorDefaultCard"
+            android:minLines="1"
+            android:padding="8dp"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/colors_panel"
+            tools:text="blalb\nblalbblalllbl\nlb" />
+
+
+        <!-- <com.google.android.material.floatingactionbutton.FloatingActionButton
+             android:id="@+id/edit_note_save_btn"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_margin="16dp"
+             android:src="@drawable/ic_done_black_24dp"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintTop_toBottomOf="@id/edit_note_content"/>
+     -->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

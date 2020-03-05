@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_delete_all"
+        android:icon="@drawable/ic_delete_white_24dp"
+        android:title="@string/delete_all_notes"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_save_note"
+        android:icon="@drawable/ic_done_white_24dp"
+        android:title="@string/save_note"
+        android:visible="false"
+        app:showAsAction="always" />
+</menu>
