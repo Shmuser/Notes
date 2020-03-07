@@ -2,7 +2,6 @@ package ru.vladroid.notes
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,12 +12,14 @@ import ru.vladroid.notes.model.Note
 import java.util.*
 
 
-class ViewNoteFragment: Fragment(), View.OnClickListener {
+class ViewNoteFragment : Fragment(), View.OnClickListener {
     private val colorsArray: IntArray =
-        intArrayOf(R.id.default_card_color, R.id.green_card_color,
-            R.id.blue_card_color, R.id.red_card_color, R.id.pink_card_color)
+        intArrayOf(
+            R.id.default_card_color, R.id.green_card_color,
+            R.id.blue_card_color, R.id.red_card_color, R.id.pink_card_color
+        )
 
-    fun getColorByType() =
+    private fun getColorByType() =
         when (noteType) {
             2 -> R.color.colorGreenCard
             3 -> R.color.colorBlueCard
@@ -27,13 +28,12 @@ class ViewNoteFragment: Fragment(), View.OnClickListener {
             else -> R.color.colorDefaultCard
         }
 
-
     override fun onClick(v: View?) {
         noteType = if (v == null) 1 else colorsArray.indexOf(v.id) + 1
         content?.setBackgroundResource(getColorByType())
     }
 
-    var innerNote: Note? = null
+    var innerNote: Note = Note("", 0, 0, Date(0))
     var noteType = 1
     val content by lazy {
         view?.findViewById<EditText>(R.id.edit_note_content)
@@ -47,19 +47,15 @@ class ViewNoteFragment: Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_note, container, false)
     }
 
-
     override fun onStart() {
         super.onStart()
-
-        innerNote = arguments?.getParcelable("note")
-        Log.d("note?!", "start...")
-        Log.d("note?!", (innerNote == null).toString())
-        innerNote?.let {
-            content?.setText(innerNote?.content)
-            noteType = innerNote!!.type
+        val argNote: Note? = arguments?.getParcelable("note")
+        argNote?.let {
+            innerNote.id = argNote.id
+            content?.setText(argNote.content)
+            noteType = argNote.type
             (content?.background as ColorDrawable).color
             content?.setBackgroundResource(getColorByType())
-            // noteText.setBackgroundResource()
         }
         val defaultColorBtn = view?.findViewById<ImageView>(R.id.default_card_color)
         val greenColorBtn = view?.findViewById<ImageView>(R.id.green_card_color)
@@ -75,14 +71,13 @@ class ViewNoteFragment: Fragment(), View.OnClickListener {
     }
 
     fun getNote(): Note {
-        Log.d("new_note", content?.text.toString() + " !")
-        innerNote?.content = content?.text.toString()
-        innerNote?.type = noteType
-        innerNote?.editDate = Calendar.getInstance().time
-        return innerNote!!
+        innerNote.content = content?.text.toString()
+        innerNote.type = noteType
+        innerNote.editDate = Calendar.getInstance().time
+        return innerNote
     }
 
     fun setNoteId(noteId: Long) {
-        innerNote?.id = noteId.toInt()
+        innerNote.id = noteId.toInt()
     }
 }

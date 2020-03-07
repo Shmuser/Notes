@@ -3,7 +3,6 @@ package ru.vladroid.notes
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -181,9 +180,11 @@ class MainActivity : AppCompatActivity() {
     private fun saveNoteFromFragment() {
         val note = noteFragment?.getNote()
         if (note?.content?.isNotEmpty()!!) {
-            val isUpdate = viewModel.notes.value?.filter { x -> x.id == note.id }?.size != 0
-            if (isUpdate) {
-                viewModel.update(note)
+            val notesArray = viewModel.notes.value?.filter { x -> x.id == note.id }
+            if (notesArray != null && notesArray.isNotEmpty()) {
+                val oldNote = notesArray[0]
+                if (note.content != oldNote.content || note.type != oldNote.type)
+                    viewModel.update(note)
             }
             else {
                 val noteId = viewModel.insert(note)
