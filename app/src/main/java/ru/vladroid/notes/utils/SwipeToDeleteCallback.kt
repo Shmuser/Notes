@@ -1,4 +1,4 @@
-package ru.vladroid.notes
+package ru.vladroid.notes.utils
 
 import android.graphics.Canvas
 import androidx.recyclerview.widget.ItemTouchHelper

@@ -1,7 +1,6 @@
-package ru.vladroid.notes
+package ru.vladroid.notes.utils
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import ru.vladroid.notes.R
 import ru.vladroid.notes.model.DateConverter
 import ru.vladroid.notes.model.Note
 
@@ -43,11 +43,36 @@ class NotesListAdapter(val context: Context, val listener: OnItemClickListener):
         holder.noteDate.text = DateConverter.dateFormat.format(note.editDate)
         holder.noteBackground.setOnClickListener {_: View? -> listener.onItemClick(note)}
         when (note.type) {
-            2 -> holder.noteBackground.setCardBackgroundColor(getColor(context, R.color.colorGreenCard))
-            3 -> holder.noteBackground.setCardBackgroundColor(getColor(context, R.color.colorBlueCard))
-            4 -> holder.noteBackground.setCardBackgroundColor(getColor(context, R.color.colorRedCard))
-            5 -> holder.noteBackground.setCardBackgroundColor(getColor(context, R.color.colorPinkCard))
-            else -> holder.noteBackground.setCardBackgroundColor(getColor(context, R.color.colorDefaultCard))
+            2 -> holder.noteBackground.setCardBackgroundColor(
+                getColor(
+                    context,
+                    R.color.colorGreenCard
+                )
+            )
+            3 -> holder.noteBackground.setCardBackgroundColor(
+                getColor(
+                    context,
+                    R.color.colorBlueCard
+                )
+            )
+            4 -> holder.noteBackground.setCardBackgroundColor(
+                getColor(
+                    context,
+                    R.color.colorRedCard
+                )
+            )
+            5 -> holder.noteBackground.setCardBackgroundColor(
+                getColor(
+                    context,
+                    R.color.colorPinkCard
+                )
+            )
+            else -> holder.noteBackground.setCardBackgroundColor(
+                getColor(
+                    context,
+                    R.color.colorDefaultCard
+                )
+            )
         }
     }
 

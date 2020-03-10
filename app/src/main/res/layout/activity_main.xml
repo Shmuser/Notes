@@ -8,7 +8,7 @@
     app:layoutDescription="@xml/scene_01"
     app:motionDebug="SHOW_ALL"
     app:showPaths="true"
-    tools:context=".MainActivity">
+    tools:context=".screenview.MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notes_recycler_view"
