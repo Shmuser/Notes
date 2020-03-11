@@ -2,7 +2,7 @@ package ru.vladroid.notes.model
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import io.reactivex.Observable
+import io.reactivex.Single
 
 @Dao
 interface NoteDao {
@@ -28,5 +28,5 @@ interface NoteDao {
     suspend fun update(note: Note)
 
     @Query("select * from notes where id = :id")
-    fun getNote(id: Int): Observable<Note>
+    fun getNote(id: Int): Single<Note>
 }

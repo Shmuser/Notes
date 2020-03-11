@@ -14,6 +14,7 @@ import ru.vladroid.notes.R
 import ru.vladroid.notes.model.Note
 import ru.vladroid.notes.model.NotesViewModel
 import ru.vladroid.notes.utils.NotesListAdapter
+import ru.vladroid.notes.utils.SharedPrefsHelper
 import ru.vladroid.notes.widget.NoteWidget
 
 
@@ -65,12 +66,9 @@ class WidgetConfigActivity : AppCompatActivity() {
 
     private fun onNoteClick(note: Note) {
         val sp = getSharedPreferences(NoteWidget.WIDGET_PREF, Context.MODE_PRIVATE)
-        val editor = sp.edit()
-        editor.putInt(NoteWidget.WIDGET_NOTE_ID + widgetId, note.id)
-        editor.commit()
-
+        SharedPrefsHelper.create(sp, widgetId, note.id)
         val appWidgetManager = AppWidgetManager.getInstance(this)
-        NoteWidget.updateAppWidget(this, appWidgetManager, sp, widgetId)
+        NoteWidget.updateAppWidget(this, appWidgetManager, sp, widgetId, note)
         setResult(Activity.RESULT_OK, resultIntent)
         finish()
     }

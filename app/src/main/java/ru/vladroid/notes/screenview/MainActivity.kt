@@ -1,8 +1,10 @@
 package ru.vladroid.notes.screenview
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,18 +19,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.SingleObserver
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import ru.vladroid.notes.R
 import ru.vladroid.notes.model.Note
 import ru.vladroid.notes.model.NotesViewModel
+import ru.vladroid.notes.utils.NoteGetter
 import ru.vladroid.notes.utils.NotesListAdapter
 import ru.vladroid.notes.utils.NotesListAdapter.OnItemClickListener
+import ru.vladroid.notes.utils.SharedPrefsHelper
 import ru.vladroid.notes.utils.SwipeToDeleteCallback
+import ru.vladroid.notes.widget.NoteWidget
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private var menu: Menu? = null
     private var noteFragment: ViewNoteFragment? = null
+    private val changedNotes = mutableSetOf<Note>()
 
     private val viewModel by lazy {
         NotesViewModel(application)
@@ -36,6 +46,10 @@ class MainActivity : AppCompatActivity() {
 
     private val motionLayout by lazy {
         findViewById<MotionLayout>(R.id.motion_layout)
+    }
+
+    private val sp by lazy {
+        getSharedPreferences(NoteWidget.WIDGET_PREF, Context.MODE_PRIVATE)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +63,6 @@ class MainActivity : AppCompatActivity() {
             saveNoteFromFragment()
             toNotesState()
         }
-
         val recyclerView = findViewById<RecyclerView>(R.id.notes_recycler_view)
         val adapter = NotesListAdapter(this, object : OnItemClickListener {
             override fun onItemClick(note: Note) {
@@ -62,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.notes.observe(this, Observer {
             adapter.setNotes(it)
         })
-        populateDb()
+        // populateDb()
 
         fab.setOnClickListener {
             toNoteFragmentState(Note("", 0, 0, Date(0)))
@@ -113,6 +126,37 @@ class MainActivity : AppCompatActivity() {
             }
         val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
+        intent?.let {
+            if (intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE) {
+                val noteId = intent.getIntExtra(NoteWidget.WIDGET_NOTE_ID, -1)
+                NoteGetter.getNoteById(this, noteId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        object : SingleObserver<Note> {
+                            override fun onSubscribe(d: Disposable) {
+                            }
+
+                            override fun onError(e: Throwable) {
+                            }
+
+                            override fun onSuccess(t: Note) {
+                                toNoteFragmentState(t)
+                            }
+                        })
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        noteFragment?.isVisible?.let {
+            saveNoteFromFragment()
+        }
+        for (note in changedNotes) {
+            updateWidgets(note)
+        }
+        changedNotes.clear()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -194,8 +238,10 @@ class MainActivity : AppCompatActivity() {
             val notesArray = viewModel.notes.value?.filter { x -> x.id == note.id }
             if (notesArray != null && notesArray.isNotEmpty()) {
                 val oldNote = notesArray[0]
-                if (note.content != oldNote.content || note.type != oldNote.type)
+                if (note.content != oldNote.content || note.type != oldNote.type) {
                     viewModel.update(note)
+                    changedNotes.add(note)
+                }
             } else {
                 val noteId = viewModel.insert(note)
                 noteId.observe(this, object : Observer<Long> {
@@ -210,11 +256,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateWidgets(note: Note) {
+        // loadSharedPrefs()
+        val widgetIds = SharedPrefsHelper.getWidgetIdsByNoteId(sp, note.id)
+        if (widgetIds.size > 0) {
+            val appWidgetManager = AppWidgetManager.getInstance(this)
+            for (widgetId in widgetIds) {
+                NoteWidget.updateAppWidget(this, appWidgetManager, sp, widgetId, note)
+            }
+        }
+    }
+
     override fun onBackPressed() {
         if (motionLayout.currentState == motionLayout.endState) {
+            saveNoteFromFragment()
             toNotesState()
         } else {
             super.onBackPressed()
         }
+    }
+
+    fun loadSharedPrefs() {
+        Log.i("Loading Shared Prefs", "-----------------------------------")
+        Log.i("----------------", "---------------------------------------")
+
+        val preference = getSharedPreferences(NoteWidget.WIDGET_PREF, MODE_PRIVATE)
+        for (key in preference.all.keys) {
+            Log.i(key, preference.getInt(key, -1).toString())
+        }
+        Log.i("----------------", "---------------------------------------")
+
+        Log.i("Finished Shared Prefs", "----------------------------------")
     }
 }

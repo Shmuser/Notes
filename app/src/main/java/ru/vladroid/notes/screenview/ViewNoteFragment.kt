@@ -74,6 +74,11 @@ class ViewNoteFragment : Fragment(), View.OnClickListener {
         pinkColorBtn?.setOnClickListener(this)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        arguments?.putParcelable("note", getNote())
+    }
+
     fun getNote(): Note {
         innerNote.content = content?.text.toString()
         innerNote.type = noteType
