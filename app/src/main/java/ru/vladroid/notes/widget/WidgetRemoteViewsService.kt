@@ -1,12 +1,11 @@
 package ru.vladroid.notes.widget
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import ru.vladroid.notes.R
-import ru.vladroid.notes.model.NoteDao
-import ru.vladroid.notes.model.NotesDatabase
 
 
 class WidgetRemoteViewsService : RemoteViewsService() {
@@ -15,14 +14,15 @@ class WidgetRemoteViewsService : RemoteViewsService() {
     }
 
     class WidgetFactory : RemoteViewsService.RemoteViewsFactory {
-        private val noteDao: NoteDao
         private var noteContent: String
         private val context: Context
+        private val widgetId: Int
+        private val noteId: Int
 
         constructor(context: Context, intent: Intent?) {
-            val db = NotesDatabase.getInstance(context)
-            noteDao = db.notesDao()
             noteContent = intent!!.getStringExtra(NoteWidget.WIDGET_NOTE_CONTENT)
+            widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0)
+            noteId = intent.getIntExtra(NoteWidget.WIDGET_NOTE_ID, -1)
             this.context = context
         }
 
@@ -47,6 +47,9 @@ class WidgetRemoteViewsService : RemoteViewsService() {
         override fun getViewAt(position: Int): RemoteViews {
             val view = RemoteViews(context.packageName, R.layout.widget_item)
             view.setTextViewText(R.id.widget_note_content, noteContent)
+            val updateIntent = Intent()
+            updateIntent.putExtra(NoteWidget.WIDGET_NOTE_ID, noteId)
+            view.setOnClickFillInIntent(R.id.widget_note_content, updateIntent)
             return view
         }
 

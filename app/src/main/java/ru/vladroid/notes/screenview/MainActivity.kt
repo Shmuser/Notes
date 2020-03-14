@@ -2,8 +2,10 @@ package ru.vladroid.notes.screenview
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -12,7 +14,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,13 +42,14 @@ class MainActivity : AppCompatActivity() {
     private var menu: Menu? = null
     private var noteFragment: ViewNoteFragment? = null
     private val changedNotes = mutableSetOf<Note>()
+    private var isNoteState = false
 
     private val viewModel by lazy {
         NotesViewModel(application)
     }
 
-    private val motionLayout by lazy {
-        findViewById<MotionLayout>(R.id.motion_layout)
+    private val constraintLayout by lazy {
+        findViewById<ConstraintLayout>(R.id.motion_layout)
     }
 
     private val sp by lazy {
@@ -54,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_all_notes)
         window.decorView.setBackgroundColor(Color.LTGRAY)
         // this.deleteDatabase("notes-db")
         val fab = findViewById<FloatingActionButton>(R.id.add_note_fab)
@@ -126,8 +130,12 @@ class MainActivity : AppCompatActivity() {
             }
         val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    override fun onStart() {
+        super.onStart()
         intent?.let {
-            if (intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE) {
+            if (intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
                 val noteId = intent.getIntExtra(NoteWidget.WIDGET_NOTE_ID, -1)
                 NoteGetter.getNoteById(this, noteId)
                     .subscribeOn(Schedulers.io())
@@ -146,6 +154,11 @@ class MainActivity : AppCompatActivity() {
                         })
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        this.intent = intent
     }
 
     override fun onPause() {
@@ -208,9 +221,10 @@ class MainActivity : AppCompatActivity() {
             noteFragment?.arguments = noteBundle
         }
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.fragment_container, noteFragment!!)
+        transaction.replace(R.id.fragment_container, noteFragment!!)
         transaction.commit()
-        motionLayout.transitionToEnd()
+        updateConstraints(R.layout.activity_main_note_view)
+        isNoteState = true
         hideOption(R.id.action_delete_all)
         showOption(R.id.action_save_note)
     }
@@ -219,9 +233,17 @@ class MainActivity : AppCompatActivity() {
         noteFragment?.let {
             supportFragmentManager.beginTransaction().remove(it).commit()
         }
-        motionLayout.transitionToStart()
+        updateConstraints(R.layout.activity_main_all_notes)
+        isNoteState = false
         showOption(R.id.action_delete_all)
         hideOption(R.id.action_save_note)
+    }
+
+    private fun updateConstraints(id: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(this, id)
+        constraintSet.applyTo(constraintLayout)
+        TransitionManager.beginDelayedTransition(constraintLayout)
     }
 
     private fun hideKeyboard() {
@@ -268,11 +290,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (motionLayout.currentState == motionLayout.endState) {
+        if (isNoteState) {
             saveNoteFromFragment()
             toNotesState()
         } else {
             super.onBackPressed()
+
         }
     }
 

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/motion_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ltgray"
     app:layoutDescription="@xml/scene_01"
     app:motionDebug="SHOW_ALL"
     app:showPaths="true"
@@ -23,6 +24,7 @@
         android:id="@+id/fragment_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0"
         android:background="@color/colorFragmentBackground"
         android:clickable="true"
         android:focusable="true"
@@ -42,6 +44,9 @@
         android:id="@+id/add_note_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_add_black_24dp" />
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

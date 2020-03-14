@@ -51,12 +51,8 @@ class NoteWidget : AppWidgetProvider() {
                 else -> color = NotesListAdapter.getColor(context!!, R.color.colorDefaultCard)
             }
             views.setInt(R.id.widget_background, "setBackgroundColor", color)
-            setNote(views, context, note.content, appWidgetId)
-            val configIntent = Intent(context, MainActivity::class.java)
-            configIntent.action = AppWidgetManager.ACTION_APPWIDGET_CONFIGURE
-            configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            configIntent.putExtra(WIDGET_NOTE_ID, note.id)
-            val pIntent = PendingIntent.getActivity(context, appWidgetId, configIntent, 0)
+            setNote(views, context, note.content, note.id, appWidgetId)
+            val pIntent = constructOnClickPendingIntent(context, appWidgetId, note.id)
             views.setOnClickPendingIntent(R.id.widget_background, pIntent)
             appWidgetManager!!.updateAppWidget(appWidgetId, views)
         }
@@ -65,13 +61,40 @@ class NoteWidget : AppWidgetProvider() {
             remoteViews: RemoteViews,
             context: Context?,
             content: String,
+            noteId: Int,
             appWidgetId: Int
         ) {
             val adapter = Intent(context, WidgetRemoteViewsService::class.java)
             adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             adapter.putExtra(WIDGET_NOTE_CONTENT, content)
+            adapter.putExtra(WIDGET_NOTE_ID, noteId)
             adapter.data = Uri.parse("$appWidgetId $content")
             remoteViews.setRemoteAdapter(R.id.scroll_container, adapter)
+            val updateIntent = Intent(context, MainActivity::class.java)
+            updateIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            remoteViews.setPendingIntentTemplate(
+                R.id.scroll_container,
+                PendingIntent.getActivity(
+                    context,
+                    appWidgetId,
+                    updateIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            )
+        }
+
+        private fun constructOnClickPendingIntent(
+            context: Context?,
+            appWidgetId: Int,
+            noteId: Int
+        ): PendingIntent {
+            val updateIntent = Intent(context, MainActivity::class.java)
+            updateIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            updateIntent.putExtra(WIDGET_NOTE_ID, noteId)
+            updateIntent.data = Uri.parse(noteId.toString())
+            return PendingIntent.getActivity(context, appWidgetId, updateIntent, 0)
         }
     }
 
