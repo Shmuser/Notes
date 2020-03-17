@@ -47,11 +47,7 @@ class NotesModule {
 
     @Provides
     @Singleton
-    fun provideNotesModel(
-        application: Application,
-        notesRepository: NotesRepository,
-        sharedPreferences: SharedPreferences
-    ): NotesModel = NotesModel(application, notesRepository, sharedPreferences)
+    fun provideNotesModel(application: Application): NotesModel = NotesModel(application)
 }
 
 

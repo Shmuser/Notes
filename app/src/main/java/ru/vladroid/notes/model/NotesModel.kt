@@ -7,16 +7,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.vladroid.notes.utils.App
 import javax.inject.Inject
 
 
 class NotesModel @Inject constructor(
-    application: Application,
-    private var repository: NotesRepository,
-    private var sp: SharedPreferences
+    application: Application
 ) : AndroidViewModel(application) {
 
-    private var notes: LiveData<List<Note>> = repository.allNotes
+    private var notes: LiveData<List<Note>>
+    private var repository: NotesRepository
+    private var sp: SharedPreferences
+
+    init {
+        repository = (application as App).getAppComponent().getNotesRepository()
+        sp = application.getAppComponent().getSharedPrefs()
+        notes = repository.allNotes
+    }
 
     fun insert(note: Note): MutableLiveData<Long> {
         val insertedId = MutableLiveData<Long>()
