@@ -2,7 +2,6 @@ package ru.vladroid.notes.screenview
 
 import android.app.Activity
 import android.appwidget.AppWidgetManager
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.vladroid.notes.R
 import ru.vladroid.notes.model.Note
-import ru.vladroid.notes.model.NotesViewModel
+import ru.vladroid.notes.model.NotesModel
 import ru.vladroid.notes.utils.NotesListAdapter
 import ru.vladroid.notes.utils.SharedPrefsHelper
 import ru.vladroid.notes.widget.NoteWidget
@@ -21,7 +20,7 @@ import ru.vladroid.notes.widget.NoteWidget
 class WidgetConfigActivity : AppCompatActivity() {
 
     private val viewModel by lazy {
-        NotesViewModel(application)
+        NotesModel(application)
     }
 
     var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
@@ -58,14 +57,13 @@ class WidgetConfigActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        viewModel.notes.observe(this, Observer {
+        viewModel.getNotesList().observe(this, Observer {
             adapter.setNotes(it)
         })
-
     }
 
     private fun onNoteClick(note: Note) {
-        val sp = getSharedPreferences(NoteWidget.WIDGET_PREF, Context.MODE_PRIVATE)
+        val sp = viewModel.getSP()
         SharedPrefsHelper.create(sp, widgetId, note.id)
         val appWidgetManager = AppWidgetManager.getInstance(this)
         NoteWidget.updateAppWidget(this, appWidgetManager, sp, widgetId, note)
