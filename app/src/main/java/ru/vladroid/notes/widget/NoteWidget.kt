@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.widget.RemoteViews
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,7 +27,6 @@ class NoteWidget : AppWidgetProvider() {
         fun updateAppWidget(
             context: Context?,
             appWidgetManager: AppWidgetManager?,
-            sp: SharedPreferences,
             appWidgetId: Int,
             note: Note
         ) {
@@ -111,7 +109,7 @@ class NoteWidget : AppWidgetProvider() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    { updateAppWidget(context, appWidgetManager, sp, appWidgetId, it) },
+                    { updateAppWidget(context, appWidgetManager, appWidgetId, it) },
                     { })
         }
     }

@@ -1,26 +1,22 @@
 package ru.vladroid.notes.model
 
 import android.app.Application
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import ru.vladroid.notes.utils.AppConstants
+import javax.inject.Inject
 
-class NotesModel(application: Application) : AndroidViewModel(application) {
-    private val repository: NotesRepository
-    private var notes: LiveData<List<Note>>
+
+class NotesModel @Inject constructor(
+    application: Application,
+    private var repository: NotesRepository,
     private var sp: SharedPreferences
+) : AndroidViewModel(application) {
 
-    init {
-        val notesDao = NotesDatabase.getInstance(application).notesDao()
-        repository = NotesRepository(notesDao)
-        notes = repository.allNotes
-        sp = application.getSharedPreferences(AppConstants.WIDGET_PREF, Context.MODE_PRIVATE)
-    }
+    private var notes: LiveData<List<Note>> = repository.allNotes
 
     fun insert(note: Note): MutableLiveData<Long> {
         val insertedId = MutableLiveData<Long>()

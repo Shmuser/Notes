@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.vladroid.notes.R
 import ru.vladroid.notes.model.Note
 import ru.vladroid.notes.model.NotesModel
+import ru.vladroid.notes.utils.App
 import ru.vladroid.notes.utils.NotesListAdapter
 import ru.vladroid.notes.utils.SharedPrefsHelper
 import ru.vladroid.notes.widget.NoteWidget
@@ -19,9 +20,7 @@ import ru.vladroid.notes.widget.NoteWidget
 
 class WidgetConfigActivity : AppCompatActivity() {
 
-    private val viewModel by lazy {
-        NotesModel(application)
-    }
+    lateinit var viewModel: NotesModel
 
     var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     var resultIntent = Intent()
@@ -40,6 +39,10 @@ class WidgetConfigActivity : AppCompatActivity() {
         if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish()
         }
+
+        viewModel = (application as App)
+            .getAppComponent()
+            .getNotesModel()
 
         resultIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         setResult(Activity.RESULT_CANCELED, resultIntent)
@@ -66,7 +69,7 @@ class WidgetConfigActivity : AppCompatActivity() {
         val sp = viewModel.getSP()
         SharedPrefsHelper.create(sp, widgetId, note.id)
         val appWidgetManager = AppWidgetManager.getInstance(this)
-        NoteWidget.updateAppWidget(this, appWidgetManager, sp, widgetId, note)
+        NoteWidget.updateAppWidget(this, appWidgetManager, widgetId, note)
         setResult(Activity.RESULT_OK, resultIntent)
         finish()
     }

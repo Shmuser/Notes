@@ -11,6 +11,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.vladroid.notes.model.Note
 import ru.vladroid.notes.model.NotesModel
+import ru.vladroid.notes.utils.App
 import ru.vladroid.notes.utils.AppConstants
 import ru.vladroid.notes.utils.NoteGetter
 import ru.vladroid.notes.utils.SharedPrefsHelper
@@ -19,7 +20,11 @@ import ru.vladroid.notes.widget.NoteWidget
 
 class MainPresenterImpl(application: Application) : MainPresenter {
     private var mainView: MainView? = null
-    private var notesModel: NotesModel = NotesModel(application)
+
+    var notesModel: NotesModel = (application as App)
+        .getAppComponent()
+        .getNotesModel()
+
     private val changedNotes = mutableSetOf<Note>()
 
     override fun detachView() {
@@ -119,7 +124,7 @@ class MainPresenterImpl(application: Application) : MainPresenter {
         if (widgetIds.size > 0) {
             val appWidgetManager = AppWidgetManager.getInstance(context)
             for (widgetId in widgetIds) {
-                NoteWidget.updateAppWidget(context, appWidgetManager, sp, widgetId, note)
+                NoteWidget.updateAppWidget(context, appWidgetManager, widgetId, note)
             }
         }
     }

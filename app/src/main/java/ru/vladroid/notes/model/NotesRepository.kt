@@ -1,8 +1,9 @@
 package ru.vladroid.notes.model
 
 import androidx.lifecycle.LiveData
+import javax.inject.Inject
 
-class NotesRepository(private val noteDao: NoteDao) {
+class NotesRepository @Inject constructor(private val noteDao: NoteDao) {
 
     val allNotes: LiveData<List<Note>> = noteDao.getAll()
 
