@@ -27,6 +27,7 @@ import ru.vladroid.notes.utils.NotesListAdapter
 import ru.vladroid.notes.utils.NotesListAdapter.OnItemClickListener
 import ru.vladroid.notes.utils.SwipeToDeleteCallback
 import java.util.*
+import kotlin.concurrent.fixedRateTimer
 
 class MainActivity : AppCompatActivity(), MainView {
 
@@ -113,6 +114,15 @@ class MainActivity : AppCompatActivity(), MainView {
         mainPresenter.updateWidgetsWithChangedNotes(this)
     }
 
+    override fun onBackPressed() {
+        if (noteFragment != null && noteFragment!!.isVisible) {
+            mainPresenter.saveNoteFromFragment()
+            mainPresenter.toNotesState()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     override fun getNoteFromFragment(): Note? = noteFragment?.getNote()
 
     override fun getLifecycleOwner(): LifecycleOwner = this
@@ -157,6 +167,7 @@ class MainActivity : AppCompatActivity(), MainView {
         noteFragment?.let {
             supportFragmentManager.beginTransaction().remove(it).commit()
         }
+        noteFragment = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
