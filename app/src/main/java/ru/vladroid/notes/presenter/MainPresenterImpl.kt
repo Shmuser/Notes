@@ -1,6 +1,5 @@
 package ru.vladroid.notes.presenter
 
-import android.app.Application
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
@@ -18,11 +17,10 @@ import ru.vladroid.notes.utils.SharedPrefsHelper
 import ru.vladroid.notes.view.MainView
 import ru.vladroid.notes.widget.NoteWidget
 
-class MainPresenterImpl(application: Application) : MainPresenter {
+class MainPresenterImpl : MainPresenter {
     private var mainView: MainView? = null
 
-    var notesModel: NotesModel = (application as App)
-        .getAppComponent()
+    private var notesModel: NotesModel = App.getAppComponent()
         .getNotesModel()
 
     private val changedNotes = mutableSetOf<Note>()
@@ -48,13 +46,12 @@ class MainPresenterImpl(application: Application) : MainPresenter {
                 }
             } else {
                 val noteId = notesModel.insert(note)
-                noteId.observe(mainView!!.getLifecycleOwner(), object : Observer<Long> {
-                    override fun onChanged(t: Long?) {
+                noteId.observe(mainView!!.getLifecycleOwner(),
+                    Observer<Long> { t ->
                         t?.let {
                             mainView!!.getNoteFragment()?.setNoteId(it)
                         }
-                    }
-                })
+                    })
             }
             mainView?.hideKeyboard()
         }
@@ -88,7 +85,7 @@ class MainPresenterImpl(application: Application) : MainPresenter {
         intent.let {
             if (intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
                 val noteId = intent.getIntExtra(AppConstants.WIDGET_NOTE_ID, -1)
-                NoteGetter.getNoteById(context, noteId)
+                NoteGetter.getNoteById(noteId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(

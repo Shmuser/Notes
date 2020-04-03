@@ -7,8 +7,6 @@ import ru.vladroid.notes.dependencies.DaggerAppComponent
 
 class App : Application() {
 
-    private lateinit var daggerAppComponent: AppComponent
-
     override fun onCreate() {
         super.onCreate()
         daggerAppComponent = DaggerAppComponent.builder()
@@ -16,5 +14,9 @@ class App : Application() {
             .build()
     }
 
-    fun getAppComponent() = daggerAppComponent
+    companion object {
+        private lateinit var daggerAppComponent: AppComponent
+
+        fun getAppComponent() = daggerAppComponent
+    }
 }

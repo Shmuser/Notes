@@ -35,13 +35,12 @@ class NoteWidget : AppWidgetProvider() {
                 R.id.note_date,
                 DateConverter.dateFormat.format(note.editDate)
             )
-            val color: Int
-            when (note.type) {
-                2 -> color = NotesListAdapter.getColor(context!!, R.color.colorGreenCard)
-                3 -> color = NotesListAdapter.getColor(context!!, R.color.colorBlueCard)
-                4 -> color = NotesListAdapter.getColor(context!!, R.color.colorRedCard)
-                5 -> color = NotesListAdapter.getColor(context!!, R.color.colorPinkCard)
-                else -> color = NotesListAdapter.getColor(context!!, R.color.colorDefaultCard)
+            val color: Int = when (note.type) {
+                2 -> NotesListAdapter.getColor(context!!, R.color.colorGreenCard)
+                3 -> NotesListAdapter.getColor(context!!, R.color.colorBlueCard)
+                4 -> NotesListAdapter.getColor(context!!, R.color.colorRedCard)
+                5 -> NotesListAdapter.getColor(context!!, R.color.colorPinkCard)
+                else -> NotesListAdapter.getColor(context!!, R.color.colorDefaultCard)
             }
             views.setInt(R.id.widget_background, "setBackgroundColor", color)
             setNote(views, context, note.content, note.id, appWidgetId)
@@ -105,7 +104,7 @@ class NoteWidget : AppWidgetProvider() {
                 disposables[appWidgetId]?.dispose()
                 disposables.remove(appWidgetId)
             }
-            disposables[appWidgetId] = NoteGetter.getNoteById(context, id)
+            disposables[appWidgetId] = NoteGetter.getNoteById(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

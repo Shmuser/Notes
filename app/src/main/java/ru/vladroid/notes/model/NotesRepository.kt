@@ -25,5 +25,7 @@ class NotesRepository @Inject constructor(private val noteDao: NoteDao) {
         noteDao.update(note)
     }
 
+    fun getNote(id: Int) = noteDao.getNote(id)
+
     fun getSize() = noteDao.getSize()
 }

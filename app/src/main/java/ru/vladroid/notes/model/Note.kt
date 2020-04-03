@@ -29,7 +29,7 @@ class Note : Parcelable{
     var id: Int = 0
 
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
+        parcel.readString()!!,
         parcel.readInt(),
         parcel.readInt(),
         Date(parcel.readLong())
@@ -46,7 +46,7 @@ class Note : Parcelable{
     }
 
     override fun describeContents(): Int {
-        return 0;
+        return 0
     }
 
     companion object CREATOR : Parcelable.Creator<Note> {
@@ -72,6 +72,6 @@ class DateConverter {
 
     @TypeConverter
     fun fromDate(value: Date): Long {
-        return value.time.toLong()
+        return value.time
     }
 }

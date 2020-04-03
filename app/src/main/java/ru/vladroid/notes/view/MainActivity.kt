@@ -27,7 +27,6 @@ import ru.vladroid.notes.utils.NotesListAdapter
 import ru.vladroid.notes.utils.NotesListAdapter.OnItemClickListener
 import ru.vladroid.notes.utils.SwipeToDeleteCallback
 import java.util.*
-import kotlin.concurrent.fixedRateTimer
 
 class MainActivity : AppCompatActivity(), MainView {
 
@@ -48,10 +47,10 @@ class MainActivity : AppCompatActivity(), MainView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_all_notes)
-        mainPresenter = MainPresenterImpl(application)
+        mainPresenter = MainPresenterImpl()
         mainPresenter.attachView(this)
 
-        fab = findViewById<FloatingActionButton>(R.id.add_note_fab)
+        fab = findViewById(R.id.add_note_fab)
         val fragmentBackground = findViewById<LinearLayout>(R.id.fragment_background)
         fragmentBackground.setOnClickListener {
             mainPresenter.saveNoteFromFragment()

@@ -1,6 +1,5 @@
 package ru.vladroid.notes.widget
 
-import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
@@ -14,18 +13,9 @@ class WidgetRemoteViewsService : RemoteViewsService() {
         return WidgetFactory(applicationContext, intent)
     }
 
-    class WidgetFactory : RemoteViewsService.RemoteViewsFactory {
-        private var noteContent: String
-        private val context: Context
-        private val widgetId: Int
-        private val noteId: Int
-
-        constructor(context: Context, intent: Intent?) {
-            noteContent = intent!!.getStringExtra(AppConstants.WIDGET_NOTE_CONTENT)
-            widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0)
-            noteId = intent.getIntExtra(AppConstants.WIDGET_NOTE_ID, -1)
-            this.context = context
-        }
+    class WidgetFactory(private val context: Context, intent: Intent?) : RemoteViewsFactory {
+        private var noteContent: String = intent!!.getStringExtra(AppConstants.WIDGET_NOTE_CONTENT)
+        private val noteId: Int = intent!!.getIntExtra(AppConstants.WIDGET_NOTE_ID, -1)
 
         override fun onCreate() {
         }

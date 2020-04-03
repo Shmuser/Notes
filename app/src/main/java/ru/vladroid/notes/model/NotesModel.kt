@@ -16,12 +16,10 @@ class NotesModel @Inject constructor(
 ) : AndroidViewModel(application) {
 
     private var notes: LiveData<List<Note>>
-    private var repository: NotesRepository
-    private var sp: SharedPreferences
+    private var repository: NotesRepository = App.getAppComponent().getNotesRepository()
+    private var sp: SharedPreferences = App.getAppComponent().getSharedPrefs()
 
     init {
-        repository = (application as App).getAppComponent().getNotesRepository()
-        sp = application.getAppComponent().getSharedPrefs()
         notes = repository.allNotes
     }
 

@@ -20,10 +20,10 @@ import ru.vladroid.notes.widget.NoteWidget
 
 class WidgetConfigActivity : AppCompatActivity() {
 
-    lateinit var viewModel: NotesModel
+    private lateinit var viewModel: NotesModel
 
-    var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-    var resultIntent = Intent()
+    private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private var resultIntent = Intent()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +40,7 @@ class WidgetConfigActivity : AppCompatActivity() {
             finish()
         }
 
-        viewModel = (application as App)
-            .getAppComponent()
+        viewModel = App.getAppComponent()
             .getNotesModel()
 
         resultIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)

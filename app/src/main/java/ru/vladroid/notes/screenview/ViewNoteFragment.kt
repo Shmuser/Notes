@@ -37,8 +37,8 @@ class ViewNoteFragment : Fragment(), View.OnClickListener {
         content?.setBackgroundResource(getColorByType())
     }
 
-    var innerNote: Note = Note("", 0, 0, Date(0))
-    var noteType = 1
+    private var innerNote: Note = Note("", 0, 0, Date(0))
+    private var noteType = 1
     val content by lazy {
         view?.findViewById<EditText>(R.id.edit_note_content)
     }

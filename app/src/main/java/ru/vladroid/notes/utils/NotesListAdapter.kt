@@ -12,11 +12,10 @@ import ru.vladroid.notes.R
 import ru.vladroid.notes.model.DateConverter
 import ru.vladroid.notes.model.Note
 
-class NotesListAdapter(val context: Context, val listener: OnItemClickListener): RecyclerView.Adapter<NotesListAdapter.NoteViewHolder>() {
-
+class NotesListAdapter(val context: Context, private val listener: OnItemClickListener): RecyclerView.Adapter<NotesListAdapter.NoteViewHolder>() {
 
     interface OnItemClickListener {
-        fun onItemClick(note: Note);
+        fun onItemClick(note: Note)
     }
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -41,7 +40,7 @@ class NotesListAdapter(val context: Context, val listener: OnItemClickListener):
             holder.noteDesc.text = ""
         }
         holder.noteDate.text = DateConverter.dateFormat.format(note.editDate)
-        holder.noteBackground.setOnClickListener {_: View? -> listener.onItemClick(note)}
+        holder.noteBackground.setOnClickListener {listener.onItemClick(note)}
         when (note.type) {
             2 -> holder.noteBackground.setCardBackgroundColor(
                 getColor(

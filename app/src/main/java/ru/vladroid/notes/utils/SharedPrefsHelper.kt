@@ -33,9 +33,9 @@ class SharedPrefsHelper {
                 editor.remove(AppConstants.WIDGET_ID_BY_NOTE_ID_AND_COUNT + noteId + "_" + (widgetsNewCount + 1).toString())
             } else {
                 editor.remove(AppConstants.WIDGETS_COUNT_BY_NOTE_ID + noteId)
-                editor.remove(AppConstants.WIDGET_NOTE_ID + widgetId)
                 editor.remove(AppConstants.WIDGET_ID_BY_NOTE_ID_AND_COUNT + noteId + "_" + 1.toString())
             }
+            editor.remove(AppConstants.WIDGET_NOTE_ID + widgetId)
             editor.commit()
         }
 
